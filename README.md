@@ -35,6 +35,7 @@ This project focuses on **core backend web fundamentals**—authentication, sess
 ---
 
 ## 📂 Project Structure
+```
 src/main/java/com/example
 ├── dao/ # Database access (SQL logic)
 │ ├── UserDAO.java
@@ -49,7 +50,7 @@ src/main/java/com/example
 ├── RegisterServlet.java
 ├── LogoutServlet.java
 └── ExpenseController.java
-
+```
 
 ---
 
@@ -90,7 +91,7 @@ CREATE TABLE expenses (
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 ```
-###3️⃣ Configure Database Connection
+### 3️⃣ Configure Database Connection
 
 Edit the database credentials in:
 src/main/java/com/example/util/DBUtil.java
