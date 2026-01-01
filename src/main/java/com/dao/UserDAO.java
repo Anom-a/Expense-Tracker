@@ -1,19 +1,22 @@
 package com.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import com.model.User;
 import com.util.DBUtil;
-import java.sql.*;
 
 public class UserDAO {
 
-    // Register a new user
     public void registerUser(String name, String email, String password, String role) throws SQLException {
         String sql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
             ps.setString(2, email);
-            ps.setString(3, password); // In production, hash this password!
+            ps.setString(3, password); 
             ps.setString(4, role);
             ps.executeUpdate();
         }
@@ -25,7 +28,7 @@ public class UserDAO {
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
-            ps.setString(2, password); // Check plain text password
+            ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
             
             if (rs.next()) {

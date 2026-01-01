@@ -98,12 +98,10 @@
 <div class="flex items-center gap-6">
 <div class="hidden md:flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium">
 <span class="material-symbols-outlined text-[20px]">account_circle</span>
-<span><%= user.getName() %>@university.edu</span>
+<span style="font-size: 20px;"><%= user.getName()     %></span>
 </div>
 <div class="flex items-center gap-4">
 <button class="relative p-2 text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
-<span class="material-symbols-outlined">notifications</span>
-<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full"></span>
 </button>
 <div class="h-8 w-[1px] bg-gray-200 dark:bg-gray-700 mx-2 hidden sm:block"></div>
 <a href="logout" class="flex items-center justify-center rounded-lg h-9 px-4 bg-primary hover:bg-blue-700 text-white text-sm font-bold transition-colors shadow-sm shadow-blue-500/20">
@@ -121,13 +119,13 @@
 <h1 class="text-3xl sm:text-4xl font-black tracking-tight mb-2">Welcome back, <%= user.getName() %></h1>
 <p class="text-text-secondary-light dark:text-text-secondary-dark text-base">Here is your spending overview.</p>
 </div>
-<button class="flex items-center gap-2 bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-700 hover:border-primary/50 text-text-main-light dark:text-text-main-dark px-5 py-2.5 rounded-lg shadow-sm transition-all hover:shadow-md group hover-lift">
+<button onclick="toggleForm()" class="flex items-center gap-2 bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-700 hover:border-primary/50 text-text-main-light dark:text-text-main-dark px-5 py-2.5 rounded-lg shadow-sm transition-all hover:shadow-md group hover-lift">
 <span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">add_circle</span>
 <span class="font-bold text-sm">Add Transaction</span>
 </button>
 </div>
-<!-- Add Expense Form (Hidden by default, can be toggled with JS if needed, but for now visible) -->
-<div id="addExpenseForm" class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm mb-8 animate-slide-up">
+<!-- Add Expense Form (Hidden by default) -->
+<div id="addExpenseForm" class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm mb-8 animate-slide-up hidden">
 <h3 class="font-bold text-lg mb-4">Add New Expense</h3>
 <form action="expenses" method="POST" class="flex flex-col gap-4">
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -138,25 +136,23 @@
 <button type="submit" class="w-full md:w-auto px-6 py-2 bg-primary hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm transition-all hover:shadow-md">Save Expense</button>
 </form>
 </div>
+<% double totalSpent = 0; if (expenseList != null) { for (Expense e : expenseList) { totalSpent += e.getAmount(); } } %>
 <!-- Stats Grid -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-<!-- Stat Card 1 -->
+<!-- Total Spent Stat Card -->
 <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-1 relative overflow-hidden group hover-lift">
 <div class="absolute right-0 top-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
 <span class="material-symbols-outlined text-6xl">payments</span>
 </div>
 <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-bold uppercase tracking-wider">Total Spent</p>
 <div class="flex items-baseline gap-2 mt-1">
-<span class="text-3xl font-bold text-primary">$1,250.00</span>
+<span class="text-3xl font-bold text-primary">$<%= String.format("%.2f", totalSpent) %></span>
 </div>
 <div class="flex items-center gap-1 mt-2 text-sm">
-<span class="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded text-xs font-bold flex items-center">
-<span class="material-symbols-outlined text-[14px]">trending_up</span> 12%
-</span>
-<span class="text-text-secondary-light dark:text-text-secondary-dark">vs last month</span>
+<span class="text-text-secondary-light dark:text-text-secondary-dark">All time</span>
 </div>
 </div>
-<!-- Stat Card 2 -->
+<!-- Transactions Stat Card -->
 <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-1 relative overflow-hidden group hover-lift">
 <div class="absolute right-0 top-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
 <span class="material-symbols-outlined text-6xl">receipt_long</span>
@@ -169,111 +165,8 @@
 <span class="text-text-secondary-light dark:text-text-secondary-dark">Total expenses</span>
 </div>
 </div>
-<!-- Stat Card 3 -->
-<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-1 relative overflow-hidden group hover-lift">
-<div class="absolute right-0 top-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-<span class="material-symbols-outlined text-6xl">pie_chart</span>
 </div>
-<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-bold uppercase tracking-wider">Budget Status</p>
-<div class="flex items-baseline gap-2 mt-1">
-<span class="text-3xl font-bold">85%</span>
-<span class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Used</span>
-</div>
-<div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5 mt-3">
-<div class="bg-primary h-1.5 rounded-full" style="width: 85%"></div>
-</div>
-</div>
-</div>
-<!-- Charts Section -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-<!-- Spending Chart -->
-<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm hover-lift">
-<div class="flex justify-between items-start mb-6">
-<div>
-<h3 class="font-bold text-lg">Spending Over Time</h3>
-<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Weekly breakdown</p>
-</div>
-<button class="text-primary hover:bg-primary/5 p-1 rounded transition-colors">
-<span class="material-symbols-outlined">more_horiz</span>
-</button>
-</div>
-<div class="h-64 flex items-end justify-between gap-2 sm:gap-4 px-2">
-<!-- Chart Bar 1 -->
-<div class="flex flex-col items-center gap-2 group w-full">
-<div class="w-full bg-primary/20 dark:bg-primary/20 rounded-t-lg relative h-32 group-hover:bg-primary/30 transition-all">
-<div class="absolute bottom-0 w-full bg-primary rounded-t-lg transition-all duration-500 h-[60%]"></div>
-</div>
-<span class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark">W1</span>
-</div>
-<!-- Chart Bar 2 -->
-<div class="flex flex-col items-center gap-2 group w-full">
-<div class="w-full bg-primary/20 dark:bg-primary/20 rounded-t-lg relative h-48 group-hover:bg-primary/30 transition-all">
-<div class="absolute bottom-0 w-full bg-primary rounded-t-lg transition-all duration-500 h-[85%]"></div>
-</div>
-<span class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark">W2</span>
-</div>
-<!-- Chart Bar 3 -->
-<div class="flex flex-col items-center gap-2 group w-full">
-<div class="w-full bg-primary/20 dark:bg-primary/20 rounded-t-lg relative h-40 group-hover:bg-primary/30 transition-all">
-<div class="absolute bottom-0 w-full bg-primary rounded-t-lg transition-all duration-500 h-[45%]"></div>
-</div>
-<span class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark">W3</span>
-</div>
-<!-- Chart Bar 4 -->
-<div class="flex flex-col items-center gap-2 group w-full">
-<div class="w-full bg-primary/20 dark:bg-primary/20 rounded-t-lg relative h-52 group-hover:bg-primary/30 transition-all">
-<div class="absolute bottom-0 w-full bg-primary rounded-t-lg transition-all duration-500 h-[30%]"></div>
-</div>
-<span class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark">W4</span>
-</div>
-</div>
-</div>
-<!-- Category Chart -->
-<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col hover-lift">
-<div class="flex justify-between items-start mb-6">
-<div>
-<h3 class="font-bold text-lg">Category Breakdown</h3>
-<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Where your money goes</p>
-</div>
-<button class="text-primary hover:bg-primary/5 p-1 rounded transition-colors">
-<span class="material-symbols-outlined">filter_list</span>
-</button>
-</div>
-<div class="flex flex-1 items-center justify-center gap-8">
-<div class="relative size-40 sm:size-48 rounded-full border-[12px] border-primary/20 flex items-center justify-center">
-<!-- Simple CSS Donut representation -->
-<div class="absolute inset-0 rounded-full border-[12px] border-primary border-t-transparent border-r-transparent rotate-45" style="clip-path: circle(50%);"></div>
-<div class="absolute inset-0 rounded-full border-[12px] border-green-500 border-t-transparent border-l-transparent border-b-transparent -rotate-12" style="clip-path: circle(50%);"></div>
-<div class="text-center">
-<p class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark uppercase">Top</p>
-<p class="text-xl font-black text-text-main-light dark:text-text-main-dark">Food</p>
-</div>
-</div>
-<div class="flex flex-col gap-3">
-<div class="flex items-center gap-2">
-<div class="size-3 rounded-full bg-primary"></div>
-<span class="text-sm font-medium">Food & Drink</span>
-<span class="text-sm text-text-secondary-light dark:text-text-secondary-dark ml-auto pl-2">45%</span>
-</div>
-<div class="flex items-center gap-2">
-<div class="size-3 rounded-full bg-primary/50"></div>
-<span class="text-sm font-medium">Rent</span>
-<span class="text-sm text-text-secondary-light dark:text-text-secondary-dark ml-auto pl-2">30%</span>
-</div>
-<div class="flex items-center gap-2">
-<div class="size-3 rounded-full bg-green-500"></div>
-<span class="text-sm font-medium">Transport</span>
-<span class="text-sm text-text-secondary-light dark:text-text-secondary-dark ml-auto pl-2">15%</span>
-</div>
-<div class="flex items-center gap-2">
-<div class="size-3 rounded-full bg-gray-200 dark:bg-gray-600"></div>
-<span class="text-sm font-medium">Others</span>
-<span class="text-sm text-text-secondary-light dark:text-text-secondary-dark ml-auto pl-2">10%</span>
-</div>
-</div>
-</div>
-</div>
-</div>
+
 <!-- Recent Transactions Table -->
 <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden hover-lift">
 <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -289,6 +182,7 @@
 <th class="px-6 py-4">Date</th>
 <th class="px-6 py-4 text-right">Amount</th>
 <th class="px-6 py-4 text-right">Status</th>
+<th class="px-6 py-4 text-right">Actions</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
@@ -322,6 +216,13 @@
 <span class="material-symbols-outlined text-sm">check_circle</span> Completed
 </span>
 </td>
+<td class="px-6 py-4 text-right">
+<form action="expenses" method="post" style="display: inline;">
+<input type="hidden" name="action" value="delete">
+<input type="hidden" name="id" value="<%= e.getId() %>">
+<button type="submit" class="text-red-600 hover:text-red-800 font-bold text-sm" onclick="return confirm('Are you sure you want to delete this transaction?')">Delete</button>
+</form>
+</td>
 </tr>
 <% } } %>
 </tbody>
@@ -330,5 +231,11 @@
 </div>
 </main>
 </div>
+<script>
+function toggleForm() {
+    const form = document.getElementById('addExpenseForm');
+    form.classList.toggle('hidden');
+}
+</script>
 </body>
 </html>

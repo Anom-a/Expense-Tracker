@@ -1,11 +1,16 @@
 package com.web;
 
+import java.io.IOException;
+
 import com.dao.UserDAO;
 import com.model.User;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
-import java.io.IOException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -20,7 +25,7 @@ public class LoginServlet extends HttpServlet {
 
         if (user != null) {
             HttpSession session = req.getSession();
-            session.setAttribute("currentUser", user); // Save User to Session
+            session.setAttribute("currentUser", user); 
             resp.sendRedirect("expenses");
         } else {
             req.setAttribute("error", "Invalid Credentials");

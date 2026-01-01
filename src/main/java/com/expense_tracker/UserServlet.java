@@ -13,12 +13,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-// This annotation maps the URL "/users" to this class
 @WebServlet("/users")
 public class UserServlet extends HttpServlet {
-
-    // Database credentials
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/testdb";
     private static final String DB_USER = "testuser";
     private static final String DB_PASSWORD = "testpass";
@@ -32,7 +28,6 @@ public class UserServlet extends HttpServlet {
         out.println("<h2>User List from PostgreSQL</h2>");
         out.println("<ul>");
 
-        // Load Driver (Optional for newer JDBC, but good practice for clarity)
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -41,7 +36,6 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
-        // Connect and Query
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
 
             String sql = "SELECT id, name, email FROM users";

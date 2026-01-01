@@ -1,14 +1,17 @@
 package com.dao;
 
-import com.model.Expense;
-import com.util.DBUtil;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExpenseDAO {
+import com.model.Expense;
+import com.util.DBUtil;
 
-    // Get expenses ONLY for the logged-in user
+public class ExpenseDAO {
     public List<Expense> getExpensesByUserId(int userId) {
         List<Expense> list = new ArrayList<>();
         String sql = "SELECT * FROM expenses WHERE user_id = ? ORDER BY expense_date DESC";
@@ -39,6 +42,15 @@ public class ExpenseDAO {
             ps.setString(2, category);
             ps.setDouble(3, amount);
             ps.setDate(4, date);
+            ps.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    public void deleteExpense(int expenseId) {
+        String sql = "DELETE FROM expenses WHERE id = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, expenseId);
             ps.executeUpdate();
         } catch (SQLException e) { e.printStackTrace(); }
     }

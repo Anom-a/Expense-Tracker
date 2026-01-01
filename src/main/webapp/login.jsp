@@ -101,6 +101,7 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .hover-lift:hover {
+            transition: 0.2s;
             transform: translateY(-2px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
@@ -123,9 +124,6 @@
             </div>
             <h2 class="text-xl font-bold leading-tight tracking-tight">ExpenseTracker</h2>
         </div>
-        <a class="hidden md:flex text-sm font-semibold text-text-secondary hover:text-primary transition-colors" href="#">
-            Help Center
-        </a>
     </header>
     <!-- Main Content -->
     <main class="flex-1 flex items-center justify-center p-4 sm:p-6 mb-12">
